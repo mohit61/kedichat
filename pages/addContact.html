@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Contact</title>
+  <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>
+        
+  </script>
+</head>
+<body>
+<div class="update-container container-fluid d-flex flex-column justify-content-center align-items-center">
+  <div class="card shadow pt-2 pb-2" style="width: 30rem;">
+    <div class="card-body">
+      <h5 class="card-title">Add Contact</h5>
+      <smal>Please enter a public key and display name to add your contacts.</smal>
+      <input type="text" id='name' class="form-control mt-3 mb-3" placeholder="Enter a display name">
+      <a href='#' style="float: right;" id='importPublicKey'>Import public key from a file</a>
+      <textarea class="form-control mt-3 mb-3" id='publicKey' placeholder="Enter a PGP public key" style="height: 160px;" id="exampleFormControlTextarea1" rows="5"></textarea>
+      <a href="#" class="card-link btn btn-sm btn-outline-danger"  onclick="cancel()">Cancel</a>
+      <a href="#" onclick='save()' class="card-link btn btn-sm btn-outline-warning">Add</a>
+    </div>
+  </div>
+</div>
+<script>
+
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+    let fileImport = false;
+
+    document.getElementById('importPublicKey').addEventListener("click", (e) => {
+            ipcRenderer.send('importFile');
+    });
+
+
+    ipcRenderer.on('ImportFileCb', (err, data) => {
+        document.getElementById('publicKey').value = data;
+        fileImport = true;
+    });
+
+    function save() {
+      const name = document.getElementById('name').value;
+      const publicKey = document.getElementById('publicKey').value;
+      let value = '';
+
+      let check_name = name.split("");
+      let check_publicKey = publicKey.split("");
+      let status = 1;
+
+      for(let i = 0; i < check_name.length; i++){
+          if(check_name[i] == " "){
+              status = 0;
+              console.log("Check Name: ", check_name);
+              break;
+          }
+      }
+      
+          if(check_publicKey[0] == " "){
+              status = 0;
+              console.log("Check publicKey: ", check_publicKey);
+          }
+
+        if(status == 0){
+            alert("Do not use spaces");
+        }else if(status == 1 && name != "" && publicKey != ""){
+            if(fileImport){
+                value = {
+                    "name": name,
+                    "publicKey": publicKey,
+                    "protocol": 'file'
+                }
+            }else {
+                value = {
+                    "name": name,
+                    "publicKey": publicKey,
+                    "protocol": 'text'
+                }
+            }
+            
+            
+
+            ipcRenderer.send('Contact:Add', JSON.stringify(value));
+        }
+
+        
+    }
+
+    function cancel(){
+      ipcRenderer.send('Close','contact');
+      console.log('santa');
+    }
+
+    
+</script>
+</body>
+</html>

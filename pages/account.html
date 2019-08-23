@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select && Add Account</title>
+  <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+  <a href="#" class="navbar-brand">Account List</a>
+    <div class="row">
+        <div class="col-md-12 d-flex">
+           <!-- <input type="text" id='save' class="form-control form-control-lg mr-1"> -->
+            <button class="btn btn-success mr-1" onclick='create()'>Create Account</button>
+            <button class="btn btn-danger" onclick='cancel()'>Exit</button>
+        </div>
+      </div>
+</nav>
+<div class="container main-container pt-5">
+ <!-- <h3 class="text-center">Tracker List</h3>-->
+    <div class="alert-container row" id='alert' style='display: block;'>
+    <div 
+         class="alert alert-warning col-md-8 offset-2">
+      There is no account here !! Please create an account.
+    </div>
+  </div>
+  <div class="todo container" id='todo'>
+    
+
+
+  </div>
+  
+</div>
+<nav class="navbar fixed-bottom navbar-light bg-light">
+  <span>Total Count: <b id='total_count'>24</b></span>
+</nav>
+
+<script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    function checkAccountCount(){
+        const container = document.querySelector("#todo");
+        const alert = document.querySelector('#alert');
+        const count = document.querySelector('#total_count');
+
+        count.innerHTML = container.children.length;
+
+        if(container.children.length != 0){
+            alert.style = 'display: none;'
+            
+        } else {
+            alert.style = 'display: block;'
+        }
+    }
+
+
+    checkAccountCount();
+
+    function create(){
+        ipcRenderer.send('Account:Add');
+    }
+
+    function cancel(){
+      ipcRenderer.send('Close','account');
+    }
+
+    ipcRenderer.on('init', (err, data) => {
+        for(let i = 0; i < data.length; i++){
+            if(data[i] != 'select.conf'){
+              drawRow(data[i]);
+            }
+        }
+    });
+
+    function drawRow(data){
+        const container = document.querySelector("#todo");
+
+        console.log(container.children.length);
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const col = document.createElement("div");
+        col.className = "p-2 mb-3 text-light bg-dark col-md-12 shadow card d-flex justify-content-center flex-row align-items-center";
+        col.style = "background-color: #582E48!important";
+
+
+        const p = document.createElement("p");
+        p.className = "m-0 w-100";
+        p.innerText = data;
+
+        const selectbtn = document.createElement("button");
+        selectbtn.setAttribute('data-id', data);
+        selectbtn.className = "btn btn-sm btn-outline-danger flex-shrink-1";
+        selectbtn.innerText = "Select";
+        selectbtn.style = "margin-right: 10px !important;"
+
+        selectbtn.addEventListener('click', (e) => {
+          if("Are you sure that you want to select this account ?"){
+            ipcRenderer.send('Account:Select', e.target.getAttribute('data-id'));
+          }
+        });
+
+        const deletebtn = document.createElement("button");
+        deletebtn.setAttribute('data-id', data);
+        deletebtn.className = "btn btn-sm btn-outline-danger flex-shrink-1";
+        deletebtn.innerText = "X";
+
+        deletebtn.addEventListener("click", (e) => {
+            if(confirm("Are you sure that you want to remove this tracker ?")){
+                e.target.parentNode.parentNode.remove();
+                ipcRenderer.send('Account:Remove', e.target.getAttribute("data-id"));
+                checkAccountCount();
+            }
+        });
+
+        col.appendChild(p);
+        col.appendChild(selectbtn);
+        col.appendChild(deletebtn);
+
+
+    row.appendChild(col);
+
+
+    container.appendChild(row);
+
+    checkAccountCount();
+    }
+    
+</script>
+</body>
+</html>

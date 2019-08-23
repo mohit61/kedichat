@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Account</title>
+  <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="update-container container-fluid d-flex flex-column justify-content-center align-items-center">
+  <div class="card shadow pt-2 pb-2" style="width: 30rem;">
+    <div class="card-body">
+      <h5 class="card-title">Add Account</h5>
+      <smal>This infos will be used to create PGP key.</smal>
+      <!-- name - email - pass -->
+      <input type="text" id='name' class="form-control mt-3 mb-3" placeholder="Enter a username">
+      <input type="text" id='email' class="form-control mt-3 mb-3" placeholder="Enter a valid email">
+      <input type="text" id='pass' class="form-control mt-3 mb-3" placeholder="Enter a Passphrase">
+      <a href="#" class="card-link btn btn-sm btn-outline-danger"  onclick="cancel()">Cancel</a>
+      <a href="#" onclick='save()' class="card-link btn btn-sm btn-outline-warning">Add</a>
+    </div>
+  </div>
+</div>
+
+<script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    function cancel(){
+      ipcRenderer.send('Close','add');
+    }
+
+    function save() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('pass').value;
+
+      let check_name = name.split("");
+      let check_email = email.split("");
+      let check_pass = pass.split("");
+      let status = 1;
+
+      for(let i = 0; i < check_name.length; i++){
+          if(check_name[i] == " "){
+              status = 0;
+              console.log("Check Name: ", check_name);
+              break;
+          }
+      }
+      
+      for(let i = 0; i < check_email.length; i++){
+          if(check_email[i] == " "){
+              status = 0;
+              console.log("Check Email: ", check_email);
+              break;
+          }
+      }
+
+      for(let i = 0; i < check_pass.length; i++){
+          if(check_pass[i] == " "){
+              status = 0;
+              console.log("Check Pass: ", check_pass);
+              break;
+          }
+      }
+
+        if(status == 0){
+            alert("Do not use spaces");
+            return;
+        }
+
+        if(status == 1 && name != "" && email != "" && pass != ""){
+            const value = {
+              "name": name,
+              "email": email,
+              "pass": pass
+            }
+
+            console.log(value);
+
+            ipcRenderer.send('Account:Create', JSON.stringify(value));
+        }
+
+      //ipcRenderer.send('Account:Create',value);
+
+    }
+
+    
+</script>
+
+</body>
+</html>

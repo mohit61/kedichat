@@ -1,0 +1,18 @@
+.receive {
+    float: left;
+    text-align: left;
+    border-radius: 10px;
+    border-radius: 10px;
+    background-color: #fff;;
+}
+
+.invisibility {
+    display: none;
+}
+
+.send{
+    float: right;
+    text-align: right !important;
+    border-radius: 10px;
+    background-color: #dcf8c6;
+}

@@ -1,0 +1,54 @@
+{
+  "name": "kedichat-desktop",
+  "version": "1.0.0",
+  "description": "Kedichat desktop app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wisecat57/kedinetwork-chat.git"
+  },
+  "keywords": [
+    "decenteralized",
+    "kedichat",
+    "kedinetwork",
+    "p2p",
+    "peer-to-perr"
+  ],
+  "author": "WiseCat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wisecat57/kedinetwork-chat/issues"
+  },
+  "homepage": "https://github.com/wisecat57/kedinetwork-chat#readme",
+  "dependencies": {
+    "@isomorphic-pgp/parser": "0.0.4",
+    "bootstrap-menu": "^1.0.14",
+    "deasync": "^0.1.15",
+    "easypgp": "^1.0.0",
+    "ed25519-supercop": "^1.2.0",
+    "electron": "^6.0.0",
+    "fs": "0.0.1-security",
+    "hasha": "^5.0.0",
+    "js-string-compression": "^1.0.1",
+    "kedi-ping": "^2.0.0",
+    "keybase-verify": "^2.0.0",
+    "md5": "^2.2.1",
+    "microtime": "^3.0.0",
+    "net": "^1.0.2",
+    "openpgp": "^4.5.5",
+    "path": "^0.12.7",
+    "sha256": "^0.2.0",
+    "sha256-file": "^1.0.0",
+    "simple-crypto-signature": "^1.1.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "socket.io-stream": "^0.9.1",
+    "unescape-js": "^1.1.1",
+    "url": "^0.11.0",
+    "work-token": "^1.0.2"
+  }
+}
